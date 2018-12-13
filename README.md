@@ -1,4 +1,4 @@
-A java class to decompress, and subsequently read accelerations from an Actigraph .gt3x file.
+A java class to decompress, and subsequently read accelerations from an [Actigraph .gt3x](https://github.com/actigraph/GT3X-File-Format) file.
 
 Based on a fork of Jan Brond's https://github.com/jbrond/ActigraphLib/blob/master/Gt3xFile.java. I did not find a license notification in his code and I therefore assumed Creative Commons BY license (https://creativecommons.org/licenses/by/4.0), which applies to this project as well.
 
@@ -13,7 +13,7 @@ Run Script S01... with [Octave](https://www.gnu.org/software/octave/) (or Matlab
 Run script S02... to visualise the first file of exported data on screen.
 
 TODO
-I have been told Actigraph have updated their file format, new code needed to handle the new file format (which does not include byte-packing).
+I have been told Actigraph have updated their file format and newer files are no longer 12 bit packed. This implementation does not support such files, and new code will be needed to handle the new file format.
 a tutorial for use with R using the rJava library.
 
 Written by Timo Rantalainen tjrantal at gmail dot com 2015 to 2018. 
