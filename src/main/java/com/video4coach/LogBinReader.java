@@ -81,22 +81,27 @@ public class LogBinReader{
 						direction = 0;
 					}
 				}
-				/*
-				for (int j = 0;j<tempAccelerations.size();++j){
-						System.out.print(tempAccelerations.get(j).size()+"\t");
-				}
-				System.out.println("\t");
-				System.out.println("ind\ty\tx\tz\t");
-				for (int i = 0;i<tempAccelerations.get(0).size();++i){
-					System.out.print(i+"\t");
-					for (int j = 0;j<tempAccelerations.size();++j){
-						System.out.print(tempAccelerations.get(j).get(i)+"\t");
+			}
+			
+			//Implement ACTIVITY2 here
+			if (logrecord.type == 0x1A){
+				int valuesInRecord = (int) logrecord.payload.length*8/16;
+				int valuesExtracted = 0;
+				int direction = 0;	//Used to keep track of which dimension to extract
+				//Loop through the payload to extract the accelerometry values
+				short valueBits;
+				int payloadPointer = 0;
+				while (valuesExtracted <valuesInRecord){
+					valueBits =(short) (((logrecord.payload[payloadPointer]& 0xff)<<8) | (logrecord.payload[payloadPointer+1] & 0xff));
+					++valuesExtracted;
+					payloadPointer+=2;
+					//Assign the value to the correct dimension
+					tempAccelerations.get(direction).add(valueBits);
+					++direction;
+					if (direction>2){
+						direction = 0;
 					}
-					System.out.println("");
 				}
-				//System.out.println("Found activity data, pointer "+pointer+" values "+valuesInRecord);
-				break;
-				*/
 			}
 			pointerIncrement += logrecord.nextRecordPointer-pointer;
 			pointer = logrecord.nextRecordPointer;
