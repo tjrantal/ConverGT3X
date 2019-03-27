@@ -16,11 +16,13 @@ public class LogBinFileReader{
 	private ArrayList<ArrayList<Short>> tempAccelerations;	//Y, X, Z
 	public short[][] accelerations;	//This will be returned to matlab
 	private byte[] sensorValue;
+	private byte[] sensorValue2;
 	public byte[] headerData;	//To be used by the subclass LogRecordHeader
 	public byte[] shortBytes;
 	public byte[] tStampBytes;
 	public LogBinFileReader(String fileIn, String fileOut){
 		sensorValue = new byte[3];
+		sensorValue2= new byte[2];
 		headerData = new byte[8];
 		shortBytes = new byte[2];
 		tStampBytes = new byte[4];
@@ -72,7 +74,7 @@ public class LogBinFileReader{
 
 						if (direction>2){
 							direction = 0;
-							//Write time stamp
+							
 							
 							tStampBytes[0] = (byte) (logrecord.timeStamp &	0x000000FF);	//LSB first (java is MSB)
 							tStampBytes[1] = (byte) ((logrecord.timeStamp &	0x0000FF00)>>8);	//MSB second
@@ -84,8 +86,34 @@ public class LogBinFileReader{
 					}
 
 				}else{
-					//Skip this log record
-					fi.skip(logrecord.size);
+					
+					//Implement ACTIVITY2 here
+					if (logrecord.type == 0x1A){
+						int valuesInRecord = (int) logrecord.size*8/16;
+						int valuesExtracted = 0;
+						int direction = 0;	//Used to keep track of which dimension to extract
+						//Loop through the payload to extract the accelerometry values
+						short valueBits;
+						
+						while (valuesExtracted <valuesInRecord){
+							fi.read(shortBytes);	 //Read the next 2 bytes
+							++valuesExtracted;
+							bo.write(shortBytes);	//Pass values through as is
+							++direction;
+							if (direction>2){
+								direction = 0;
+								//Write time stamp
+								tStampBytes[0] = (byte) (logrecord.timeStamp &	0x000000FF);	//LSB first (java is MSB)
+								tStampBytes[1] = (byte) ((logrecord.timeStamp &	0x0000FF00)>>8);	//MSB second
+								tStampBytes[2] = (byte) ((logrecord.timeStamp &	0x00FF0000)>>16);	//LSB first (java is MSB)
+								tStampBytes[3] = (byte) ((logrecord.timeStamp &	0xFF000000)>>24);	//LSB first (java is MSB)
+								bo.write(tStampBytes);
+							}
+						}
+					}else{
+						//Skip all other log records
+						fi.skip(logrecord.size);
+					}
 				}
 				//discard checksum
 				fi.skip(1);	//Read one byte (checksum)
