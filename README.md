@@ -12,4 +12,4 @@ Run Script S01... with [Octave](https://www.gnu.org/software/octave/) (or Matlab
 	This will decompress the .gt3x file, and unpack the byte-packing
 Run script S02... to visualise the first file of exported data on screen.
 
-Written by Timo Rantalainen tjrantal at gmail dot com 2015 to 2018. 
+Written by Timo Rantalainen tjrantal at gmail dot com 2015 to 2019. 
